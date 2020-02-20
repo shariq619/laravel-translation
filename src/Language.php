@@ -8,6 +8,19 @@ class Language extends Model
 {
     protected $guarded = [];
 
+    protected $maps = [
+        'name' => 'language'
+    ];
+
+    protected $append = ['language'];
+
+    public function getLanguageAttribute()
+    {
+        return $this->attributes['name'];
+    }
+
+    protected $hidden = ['name'];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -17,6 +30,6 @@ class Language extends Model
 
     public function translations()
     {
-        return $this->hasMany(Translation::class);
+        return $this->hasMany(Translation::class,'language_pack_id');
     }
 }
