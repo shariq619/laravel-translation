@@ -38,6 +38,7 @@ class Database extends Translation implements DriverInterface
      */
     public function allGroup($language)
     {
+
         $groups = TranslationModel::getGroupsForLanguage($language);
 
         return $groups->map(function ($translation) {
@@ -52,6 +53,7 @@ class Database extends Translation implements DriverInterface
      */
     public function allTranslations()
     {
+
         return $this->allLanguages()->mapWithKeys(function ($name, $language) {
             return [$language => $this->allTranslationsFor($language)];
         });
@@ -65,6 +67,7 @@ class Database extends Translation implements DriverInterface
      */
     public function allTranslationsFor($language)
     {
+
         return Collection::make([
             'group' => $this->getGroupTranslationsFor($language),
             'single' => $this->getSingleTranslationsFor($language),
@@ -79,6 +82,8 @@ class Database extends Translation implements DriverInterface
      */
     public function addLanguage($language, $name = null)
     {
+
+
         if ($this->languageExists($language)) {
             throw new LanguageExistsException(__('translation::errors.language_exists', ['language' => $language]));
         }
@@ -150,21 +155,28 @@ class Database extends Translation implements DriverInterface
      */
     public function getSingleTranslationsFor($language)
     {
+
+
+
         $translations = $this->getLanguage($language)
             ->translations()
-            ->where('group', 'like', '%single')
-            ->orWhereNull('group')
+            ->where('target', 'like', '%single')
+            ->orWhereNull('target')
             ->get()
-            ->groupBy('group');
+            ->groupBy('target');
+
+
 
         // if there is no group, this is a legacy translation so we need to
         // update to 'single'. We do this here so it only happens once.
         if ($this->hasLegacyGroups($translations->keys())) {
-            TranslationModel::whereNull('group')->update(['group' => 'single']);
+            TranslationModel::whereNull('target')->update(['target' => 'single']);
             // if any legacy groups exist, rerun the method so we get the
             // updated keys.
             return $this->getSingleTranslationsFor($language);
         }
+
+
 
         return $translations->map(function ($translations, $group) use ($language) {
             return $translations->mapWithKeys(function ($translation) {
@@ -183,10 +195,10 @@ class Database extends Translation implements DriverInterface
     {
         $translations = $this->getLanguage($language)
             ->translations()
-            ->whereNotNull('group')
-            ->where('group', 'not like', '%single')
+            ->whereNotNull('target')
+            ->where('target', 'not like', '%single')
             ->get()
-            ->groupBy('group');
+            ->groupBy('target');
 
         return $translations->map(function ($translations) {
             return $translations->mapWithKeys(function ($translation) {
@@ -225,7 +237,7 @@ class Database extends Translation implements DriverInterface
      */
     private function getLanguage($language)
     {
-        return Language::where('language', $language)->first();
+        return Language::where('name', $language)->first();
     }
 
     /**
