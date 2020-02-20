@@ -2,6 +2,7 @@
 
 @section('body')
 
+
     @if(count($languages))
 
         <div class="panel w-1/2">
