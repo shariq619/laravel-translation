@@ -13,7 +13,7 @@ class CreateTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::connection(config('translation.database.connection'))
+        /*Schema::connection(config('translation.database.connection'))
             ->create(config('translation.database.translations_table'), function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('language_id');
@@ -23,7 +23,7 @@ class CreateTranslationsTable extends Migration
                 $table->text('key');
                 $table->text('value')->nullable();
                 $table->timestamps();
-            });
+            });*/
     }
 
     /**
@@ -33,7 +33,7 @@ class CreateTranslationsTable extends Migration
      */
     public function down()
     {
-        Schema::connection(config('translation.database.connection'))
-            ->dropIfExists(config('translation.database.translations_table'));
+        /*Schema::connection(config('translation.database.connection'))
+            ->dropIfExists(config('translation.database.translations_table'));*/
     }
 }
